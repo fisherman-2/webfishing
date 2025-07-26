@@ -1,0 +1,228 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+  background: linear-gradient(135deg, #e9ecef 0%, #f8fafc 100%);
+  min-height: 100vh;
+}
+
+img {
+  image-rendering: pixelated;
+}
+
+.navbar {
+  background: rgba(40, 44, 52, 0.97);
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 56px;
+  display: flex;
+  align-items: stretch;
+  z-index: 1000;
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.10);
+}
+
+.navbar a,
+.navbar button {
+  color: #e9ecef;
+  background: none;
+  border: none;
+  font-size: 18px;
+  padding: 0 24px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+  outline: none;
+  user-select: none;
+}
+
+.navbar a:hover,
+.navbar button:hover {
+  background: #e9ecef;
+  color: #282c34;
+}
+
+.navbar p {
+  color: #bfc7d5;
+  font-size: 18px;
+  margin: 0 24px 0 12px;
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.main {
+  padding: 48px 16px 80px 16px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+h1 {
+  font-size: 2.8rem;
+  color: #282c34;
+  margin-bottom: 16px;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 8px #fff7, 0 1px 0 #fff;
+}
+
+button,
+input[type="button"],
+input[type="submit"] {
+  background: linear-gradient(90deg, #bfc7d5 0%, #a3b1c6 100%);
+  color: #282c34;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 22px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin: 8px 0;
+  transition: background 0.2s, transform 0.1s;
+  box-shadow: 0 2px 8px rgba(40,44,52,0.08);
+}
+
+button:hover,
+input[type="button"]:hover,
+input[type="submit"]:hover {
+  background: linear-gradient(90deg, #a3b1c6 0%, #bfc7d5 100%);
+  transform: translateY(-2px) scale(1.04);
+}
+
+.achievement-popup {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #222;
+  color: gold;
+  border: 2px solid gold;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-family: sans-serif;
+  z-index: 9999;
+  animation: fadeInOut 4s ease;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-10px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-10px); }
+}
+
+
+.scrolllist {
+  height: 200px;
+  overflow-y: auto;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #f8fafc;
+  box-shadow: 0 1px 4px #0001;
+  padding: 8px;
+  margin-bottom: 12px;
+}
+
+.popup-overlay {
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: auto;
+  background: rgba(40, 44, 52, 0.45);
+}
+
+.popup-content {
+  background: #f8fafc;
+  margin: 60px auto;
+  padding: 32px 24px 24px 24px;
+  border-radius: 16px;
+  box-shadow: 0 6px 32px #0002;
+  width: 90%;
+  max-width: 420px;
+  position: relative;
+  animation: popupIn 0.25s;
+}
+
+@keyframes popupIn {
+  from { transform: translateY(40px) scale(0.96); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.popup-content h2 {
+  margin-top: 0;
+  color: #6c7a89;
+  font-size: 1.5rem;
+  margin-bottom: 18px;
+}
+
+#fishSellList > div,
+#achievementList > div {
+  background: #e9ecef;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 1px 2px #0001;
+}
+
+#totalValue {
+  font-weight: bold;
+  color: #6c7a89;
+  margin: 10px 0 0 0;
+  font-size: 1.1rem;
+}
+
+#dabloonsAmount {
+  color: #6c7a89;
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+input[type="text"],
+input[type="password"] {
+  border: 1px solid #bfc7d5;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 1rem;
+  margin: 8px 0;
+  width: 90%;
+  box-sizing: border-box;
+  background: #e9ecef;
+  transition: border 0.2s;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+  border: 1.5px solid #6c7a89;
+  outline: none;
+}
+
+#fishIndexList li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+  font-size: 1.08em;
+}
+
+@media (max-width: 600px) {
+  .popup-content {
+    padding: 16px 4vw;
+    max-width: 98vw;
+  }
+  .main {
+    padding: 24px 4vw 80px 4vw;
+  }
+  .navbar p, .navbar a, .navbar button {
+    font-size: 15px;
+    padding: 0 8px;
+  }
+}
