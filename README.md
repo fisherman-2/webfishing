@@ -23,8 +23,4 @@ Fish have a rarity level that determines their value. On top of that, there are 
 
 ## Getting Started
 
-To run the game locally:
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/fisherman-2/web-fishing.git
+go to my website NOW http://www.fisherman-2.github.io/webfishing
