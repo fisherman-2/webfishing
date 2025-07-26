@@ -23,4 +23,4 @@ Fish have a rarity level that determines their value. On top of that, there are 
 
 ## Getting Started
 
-go to my website NOW http://www.fisherman-2.github.io/webfishing
+go to my website NOW http://fisherman-2.github.io/webfishing
