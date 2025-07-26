@@ -13,6 +13,7 @@
 - Achievements system
 - Inventory and fish index UI
 - Simple, responsive UI designed for the web
+- 144 fish to collect
 
 ## Rarities & Variants
 
