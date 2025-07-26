@@ -1,3 +1,3 @@
 <p align="center"><img src="static/img/webfishinglogo.png" /></p>
 
-a cool fishing game in browser
+<p align="center>Welcome to webfishing the best webbrowser based fishing game out their</p>
