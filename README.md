@@ -1,3 +1,3 @@
-<p align="center">![alt text](static/img/webfishinglogo.png "Web Fishing")</p>
+<p align="center"><img src="static/img/webfishinglogo.png" /></p>
 
 a cool fishing game in browser
