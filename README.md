@@ -21,6 +21,6 @@ Fish have a rarity level that determines their value. On top of that, there are 
 - **Radiant Blue Sea Dragon**  
   Odds: 1 in 179,856 (0.000556%)
 
-## Getting Started
+## How to Play
 
 go to my website NOW http://fisherman-2.github.io/webfishing
