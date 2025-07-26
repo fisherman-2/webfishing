@@ -56,6 +56,31 @@ img {
   letter-spacing: 1px;
 }
 
+.music {
+  max-width: 240px;
+  max-height: 120px;
+}
+
+/* mini audio player that will be on the bottom left */
+.music-player {
+  position: fixed;
+  bottom: 60px;
+  right: 5px;
+  padding: 10px;
+  background-color: #9fa5b1;
+  transition: 0.2s ease-in-out;
+  width: 26px;
+  height: 27px;
+}
+
+.music-player:hover {
+  width: 240px;
+  height: 120px;
+  padding-top: 5px;
+  height: 170px;
+}
+
+
 .main {
   padding: 48px 16px 80px 16px;
   margin-bottom: 30px;
