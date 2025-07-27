@@ -508,6 +508,10 @@ function catchRandomFish() {
   incrementNoSellFish();
   incrementCastCount();
 
+  if (fish.variant && variantCounts[fish.variant] !== undefined) {
+    variantCounts[fish.variant]++;
+  }
+
   // Catch 5, 20, 50 fish
   if (achievements._fishCaught === 5) unlockAchievement("fish5");
   if (achievements._fishCaught === 20) unlockAchievement("fish20");
@@ -968,7 +972,9 @@ document.getElementById("statsbutton").onclick = function () {
     for (const variant in variantCounts) {
       statsList.innerHTML += `<li style="padding-left:20px;">${variant}: ${variantCounts[variant]}</li>`;
     }
-    statsList.innerHTML += `<li><strong>Playtime:</strong> ${playtimeMinutes} min (${playtimeHours} hrs)</li>`;
+
+    const uniqueVariants = Object.keys(getUniqueVariantsCaught()).length;
+    statsList.innerHTML += `<li><strong>Unique Variants Caught:</strong> ${uniqueVariants} / ${Object.keys(variantCounts).length}</li>`;
 
     // Find most valuable fish in inventory
     let mostValuableFish = null;
@@ -1016,3 +1022,7 @@ document.getElementById("statsbutton").onclick = function () {
         }
     }
 };
+
+if (fish.variant && variantCounts[fish.variant] !== undefined) {
+  variantCounts[fish.variant]++;
+}
