@@ -4,6 +4,7 @@ let dabloons = 0; //player money
 let caughtFishIds = new Set();
 var waitamount1 = 3;
 var waitamount2 = 5;
+
 const music = document.getElementById('music');
 const musicIcon = document.querySelector('.music-icon');
 const musicPlayer = document.querySelector('.music-player');
@@ -13,6 +14,16 @@ const songlabel = document.getElementById('song-label');
 const green_room_url = 'https://www.youtube.com/embed/GrCp8AHdgEM';
 const third_sancuary = 'https://www.youtube.com/embed/7f1RK1m7qvc';
 const hip_shop = 'https://www.youtube.com/embed/D83BxptHcRc';
+
+let totalFishCaught = 0;
+let totalDabloonsEarned = 0;
+let variantCounts = {
+  Shiny: 0,
+  Golden: 0,
+  Shadow: 0,
+  Polychrome: 0,
+  Radiant: 0
+};
 
 music.addEventListener('load', () => {
     music.style.display = 'none';
@@ -481,7 +492,11 @@ function applyRandomVariant(fish) {
 function catchRandomFish() {
   const fish = getRandomFish();
   applyRandomVariant(fish);
-    inventory.push({
+
+  // Check if this is a new fish BEFORE adding to caughtFishIds
+  const isNew = !caughtFishIds.has(fish.name);
+
+  inventory.push({
     name: fish.name,
     rarity: fish.rarity,
     basePrice: fish.basePrice,
@@ -536,16 +551,17 @@ function catchRandomFish() {
     unlockAchievement("firstFish");
   }
 
+  // Update UI
   const fishimg = document.getElementById("caughtfish").src = fish.image;
   const fishname = document.getElementById("fishname");
   const fishrarity = document.getElementById("fishrarity");
   const fishprice = document.getElementById("fishprice");
 
+  // Show "New!" if first time caught
   if (fish.variant) {
-    fishname.textContent = `${fish.name} (${fish.variant})`
-  }
-  else{
-    fishname.textContent = fish.name
+    fishname.textContent = `${fish.name} (${fish.variant})${isNew ? " - New!" : ""}`;
+  } else {
+    fishname.textContent = `${fish.name}${isNew ? " - New!" : ""}`;
   }
 
   fishrarity.textContent = fish.rarity
@@ -575,6 +591,7 @@ function fish() {
     const fishb = document.getElementById("castbutton");
 
     if (isFishing) {
+        unlockAchievement("fastClicker"); // Unlock if trying to fish while timer is running
         console.log("Already fishing...");
         return; // Don't fish again until the timer is done
     }
@@ -680,9 +697,23 @@ function sellFish(index) {
   const fish = inventory[index];
   const price = getSellPrice(fish);
   dabloons += price;
+  totalDabloonsEarned += price; // For sellFish
+
+  // Unlock "sellFirst" achievement if not already unlocked
+  if (!achievements.find(a => a.id === "sellFirst").unlocked) unlockAchievement("sellFirst");
+
+  // Unlock "hundredaire" if dabloons >= 100
+  if (dabloons >= 100) unlockAchievement("hundredaire");
+
+  // Unlock "rich" if dabloons >= 1000
   if (dabloons >= 1000) unlockAchievement("rich");
+
   document.getElementById("dabloonsAmount").textContent = dabloons;
   inventory.splice(index, 1);
+
+  // Reset noSellFish counter
+  achievements._noSellFish = 0;
+
   openSellUI(); // Refresh list
 }
 
@@ -692,9 +723,26 @@ function sellAllFish() {
     total += getSellPrice(fish);
   });
   dabloons += total;
+  totalDabloonsEarned += total; // For sellAllFish
+
+  // Unlock "sellFirst" achievement if not already unlocked and at least one fish was sold
+  if (total > 0 && !achievements.find(a => a.id === "sellFirst").unlocked) unlockAchievement("sellFirst");
+
+  // Unlock "sellAll" achievement
+  if (total > 0) unlockAchievement("sellAll");
+
+  // Unlock "hundredaire" if dabloons >= 100
+  if (dabloons >= 100) unlockAchievement("hundredaire");
+
+  // Unlock "rich" if dabloons >= 1000
   if (dabloons >= 1000) unlockAchievement("rich");
+
   document.getElementById("dabloonsAmount").textContent = dabloons;
   inventory = [];
+
+  // Reset noSellFish counter
+  achievements._noSellFish = 0;
+
   openSellUI(); // Refresh
 }
 
@@ -897,6 +945,74 @@ document.getElementById("help").onclick = function () {
       window.onclick = function(event) {
         if (event.target == shopUI) {
             shopUI.style.display = "none";
+        }
+    }
+};
+
+document.getElementById("statsbutton").onclick = function () {
+    const statsUI = document.getElementById("statsui");
+    const statsList = document.getElementById("statsList");
+    statsList.innerHTML = "";
+
+    // Calculate playtime
+    const playtimeSeconds = achievements._playSeconds || 0;
+    const playtimeMinutes = Math.floor(playtimeSeconds / 60);
+    const playtimeHours = (playtimeSeconds / 3600).toFixed(2);
+
+    // Stats to display
+    statsList.innerHTML += `<li><strong>Total Fish Caught:</strong> ${totalFishCaught}</li>`;
+    statsList.innerHTML += `<li><strong>Total Dabloons Earned:</strong> ${totalDabloonsEarned}</li>`;
+    statsList.innerHTML += `<li><strong>Unique Fish Caught:</strong> ${caughtFishIds.size}</li>`;
+    statsList.innerHTML += `<li><strong>Inventory Size:</strong> ${inventory.length}</li>`;
+    statsList.innerHTML += `<li><strong>Fish Variants:</strong></li>`;
+    for (const variant in variantCounts) {
+      statsList.innerHTML += `<li style="padding-left:20px;">${variant}: ${variantCounts[variant]}</li>`;
+    }
+    statsList.innerHTML += `<li><strong>Playtime:</strong> ${playtimeMinutes} min (${playtimeHours} hrs)</li>`;
+
+    // Find most valuable fish in inventory
+    let mostValuableFish = null;
+    for (const fish of inventory) {
+      if (!mostValuableFish || fish.basePrice > mostValuableFish.basePrice) {
+        mostValuableFish = fish;
+      }
+    }
+    if (mostValuableFish) {
+      statsList.innerHTML += `<li><strong>Most Valuable Fish:</strong> ${mostValuableFish.name} (${mostValuableFish.rarity}) - $${mostValuableFish.basePrice}</li>`;
+    } else {
+      statsList.innerHTML += `<li><strong>Most Valuable Fish:</strong> ...</li>`;
+    }
+
+    // Find most common variant in inventory
+    let variantTally = {};
+    for (const fish of inventory) {
+      if (fish.variant) {
+        variantTally[fish.variant] = (variantTally[fish.variant] || 0) + 1;
+      }
+    }
+    let maxVariant = null, maxCount = 0;
+    for (const variant in variantTally) {
+      if (variantTally[variant] > maxCount) {
+        maxCount = variantTally[variant];
+        maxVariant = variant;
+      }
+    }
+    if (maxVariant) {
+      statsList.innerHTML += `<li><strong>Most Common Variant:</strong> ${maxVariant} (${maxCount})</li>`;
+    } else {
+      statsList.innerHTML += `<li><strong>Most Common Variant:</strong> ...</li>`;
+    }
+
+    statsList.innerHTML += `<li><strong>Total Casts:</strong> ${achievements._castCount || 0}</li>`;
+
+    statsUI.style.display = "block";
+
+    document.getElementById("statsclose").onclick = function () {
+        statsUI.style.display = "none";
+    };
+    window.onclick = function(event) {
+        if (event.target == statsUI) {
+            statsUI.style.display = "none";
         }
     }
 };
