@@ -794,6 +794,20 @@ document.getElementById("fishindex").onclick = function() {
     const fishIndexList = document.getElementById("fishIndexList");
     fishIndexList.innerHTML = ""; // Clear previous entries
 
+    // Count caught fish
+    let caughtCount = 0;
+    fishData.forEach(fish => {
+        if (caughtFishIds.has(fish.name)) caughtCount++;
+    });
+
+    // Add the counter at the top
+    const counter = document.createElement("div");
+    counter.style.textAlign = "center";
+    counter.style.fontWeight = "bold";
+    counter.style.marginBottom = "10px";
+    counter.textContent = `${caughtCount}/${fishData.length} fish collected`;
+    fishIndexList.appendChild(counter);
+
     fishData.forEach(fish => {
         const li = document.createElement("li");
         // Check if this fish has been caught
