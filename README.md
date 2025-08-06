@@ -11,6 +11,7 @@
 - Ultra-rare fish variations: Shiny, Golden, Shadow, Polychrome, Radiant
 - Shop with upgrades to improve your fishing efficiency
 - Achievements system
+- fully functinion weight system (yes i spell functioning wrong)
 - Inventory and fish index UI
 - Simple, responsive UI designed for the web
 - 144 fish to collect
@@ -21,6 +22,7 @@ Fish have a rarity level that determines their value. On top of that, there are 
 
 - **Radiant Blue Sea Dragon**  
   Odds: 1 in 179,856 (0.000556%)
+  * update the newest rarity is 1/1000000
 
 ## How to Play
 
