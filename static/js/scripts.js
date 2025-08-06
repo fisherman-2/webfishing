@@ -433,15 +433,14 @@ document.addEventListener("DOMContentLoaded", function() {
         inventoryList.innerHTML = "";
 
         for (let i in inventory) {
-            const iElement = document.createElement("li");
-            const item = inventory[i];
-            let display = `${item.name} (${item.rarity}) - $${item.basePrice}`;
-            if (item.variant) {
-                display += ` [${item.variant}]`;
-            }
-            iElement.textContent = display;
-
-            inventoryList.appendChild(iElement);
+          const iElement = document.createElement("li");
+          const item = inventory[i];
+          let display = `${item.name} (${item.rarity}) - $${getSellPrice(item)} - ${item.weight}kg`;
+          if (item.variant) {
+            display += ` [${item.variant}]`;
+          }
+          iElement.textContent = display;
+          inventoryList.appendChild(iElement);
         }
         closeBtn.onclick = function() {
             iui.style.display = "none";
@@ -488,19 +487,33 @@ function applyRandomVariant(fish) {
     fish.variant = null;
 }
 
+function getRandomWeight(rarity) {
+  // Example ranges, tweak as you like
+  if (rarity === "common") return +(Math.random() * 2 + 1).toFixed(2);      // 1-3kg
+  if (rarity === "uncommon") return +(Math.random() * 3 + 2).toFixed(2);    // 2-5kg
+  if (rarity === "rare") return +(Math.random() * 5 + 5).toFixed(2);        // 5-10kg
+  if (rarity === "epic") return +(Math.random() * 10 + 10).toFixed(2);      // 10-20kg
+  if (rarity === "mythic") return +(Math.random() * 20 + 20).toFixed(2);    // 20-40kg
+  if (rarity === "legendary") return +(Math.random() * 40 + 40).toFixed(2); // 40-80kg
+  return +(Math.random() * 2 + 1).toFixed(2);
+}
+
+
 
 function catchRandomFish() {
   const fish = getRandomFish();
   applyRandomVariant(fish);
 
-  // Check if this is a new fish BEFORE adding to caughtFishIds
   const isNew = !caughtFishIds.has(fish.name);
+  const weight = getRandomWeight(fish.rarity);
+  document.getElementById("castui").style.display = "block";
 
   inventory.push({
     name: fish.name,
     rarity: fish.rarity,
     basePrice: fish.basePrice,
-    variant: fish.variant || null
+    variant: fish.variant || null,
+    weight: weight
   });
   caughtFishIds.add(fish.name); // or fish.id if you prefer
 
@@ -556,19 +569,30 @@ function catchRandomFish() {
   }
 
   // Update UI
-  const fishimg = document.getElementById("caughtfish").src = fish.image;
+  const fishimg = document.getElementById("caughtfish");
+  fishimg.src = fish.image;
+  // Scale image based on weight (base 100px, +2px per kg)
+  fishimg.style.width = (100 + weight * 2) + "px";
+  fishimg.style.height = "auto";
+
   const fishname = document.getElementById("fishname");
   const fishrarity = document.getElementById("fishrarity");
   const fishprice = document.getElementById("fishprice");
+  const fishweight = document.getElementById("fishweight");
 
-  // Show "New!" if first time caught
   if (fish.variant) {
     fishname.textContent = `${fish.name} (${fish.variant})${isNew ? " - New!" : ""}`;
   } else {
     fishname.textContent = `${fish.name}${isNew ? " - New!" : ""}`;
   }
 
-  fishrarity.textContent = fish.rarity
+
+// Add close button logic
+  document.getElementById("castclose").onclick = function() {
+      document.getElementById("castui").style.display = "none";
+  };
+
+  fishrarity.textContent = fish.rarity;
   if (fish.rarity == "uncommon"){
     fishrarity.style = "color: grey;"
   }
@@ -588,7 +612,8 @@ function catchRandomFish() {
     fishrarity.style = "color: yellow;"
   }
 
-  fishprice.textContent = `$${fish.basePrice}`
+  fishprice.textContent = `$${getSellPrice({ ...fish, weight })}`;
+  fishweight.textContent = `Weight: ${weight} kg`;
 }
 
 function fish() {
@@ -667,7 +692,7 @@ function openSellUI() {
         const price = getSellPrice(fish);
 
         const fishInfo = document.createElement("span");
-        fishInfo.textContent = `${fish.name}${variantText} - $${price} `;
+        fishInfo.textContent = `${fish.name}${variantText} - $${price} - ${fish.weight}kg `;
 
         const sellButton = document.createElement("button");
         sellButton.textContent = "Sell";
@@ -688,12 +713,13 @@ function openSellUI() {
 function getSellPrice(fish) {
   let price = fish.basePrice;
   if (fish.variant) {
-    // Bonus value for special variants
     if (fish.variant === "Gold") price *= 2;
     else if (fish.variant === "Shadow") price *= 1.5;
     else if (fish.variant === "Radiant") price *= 3;
-    else price *= 1.2; // Default for other variants
+    else price *= 1.2;
   }
+  // Weight bonus: +5% per kg
+  price *= (1 + (fish.weight || 1) * 0.05);
   return Math.floor(price);
 }
 
